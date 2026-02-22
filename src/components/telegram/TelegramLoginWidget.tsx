@@ -12,7 +12,7 @@ type TelegramUser = {
 
 declare global {
   interface Window {
-    [key: string]: unknown;
+    onTelegramAuth?: (user: TelegramUser) => void;
   }
 }
 
@@ -34,9 +34,11 @@ export function TelegramLoginWidget({ onAuth, size = 'large', radius = 999 }: Pr
 
     const callbackName = `tgAuthCb_${Math.random().toString(36).slice(2)}`;
 
-    (window as Record<string, unknown>)[callbackName] = (user: TelegramUser) => {
+    window.onTelegramAuth = (user) => {
       onAuth(user);
     };
+
+    (window as unknown as Record<string, unknown>)[callbackName] = window.onTelegramAuth;
 
     const script = document.createElement('script');
     script.src = 'https://telegram.org/js/telegram-widget.js?22';
@@ -51,7 +53,7 @@ export function TelegramLoginWidget({ onAuth, size = 'large', radius = 999 }: Pr
     containerRef.current.appendChild(script);
 
     return () => {
-      delete (window as Record<string, unknown>)[callbackName];
+      delete (window as unknown as Record<string, unknown>)[callbackName];
     };
   }, [botName, configuredBot, onAuth, radius, size]);
 

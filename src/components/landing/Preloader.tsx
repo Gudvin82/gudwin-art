@@ -35,7 +35,7 @@ const Preloader = ({ isLoading }: PreloaderProps) => {
             >
               <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
                 <span className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  GB
+                  AM
                 </span>
               </div>
             </motion.div>

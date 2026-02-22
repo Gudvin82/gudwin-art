@@ -1,5 +1,3 @@
-import { sanitizeUrl } from '@/lib/security';
-
 interface StarsInvoiceResponse {
   invoiceLink?: string;
   invoiceSlug?: string;
@@ -44,10 +42,8 @@ export async function startTelegramStarsPayment(recordId: string, amountStars: n
     });
   }
 
-  const safeInvoiceUrl = data?.invoiceLink ? sanitizeUrl(data.invoiceLink) : null;
-
-  if (safeInvoiceUrl) {
-    window.open(safeInvoiceUrl, '_blank', 'noopener,noreferrer');
+  if (data?.invoiceLink) {
+    window.open(data.invoiceLink, '_blank', 'noopener,noreferrer');
     return false;
   }
 

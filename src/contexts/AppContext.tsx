@@ -25,11 +25,6 @@ export interface TelegramUser {
   hash: string;
 }
 
-interface StoredTelegramSession {
-  user: TelegramUser;
-  savedAt: string;
-}
-
 interface AppContextValue {
   lang: Lang;
   setLang: (lang: Lang) => void;
@@ -48,7 +43,6 @@ interface AppContextValue {
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
-const TELEGRAM_SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
 const getStoredLang = (): Lang => {
   if (typeof window === 'undefined') return 'ru';
@@ -74,14 +68,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const raw = localStorage.getItem('gwa_tg_user');
     if (!raw) return null;
     try {
-      const parsed = JSON.parse(raw) as StoredTelegramSession;
-      const savedAtTs = new Date(parsed.savedAt).getTime();
-
-      if (!parsed.user || Number.isNaN(savedAtTs) || Date.now() - savedAtTs > TELEGRAM_SESSION_TTL_MS) {
-        return null;
-      }
-
-      return parsed.user;
+      return JSON.parse(raw) as TelegramUser;
     } catch {
       return null;
     }
@@ -115,12 +102,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const loginWithTelegram = (user: TelegramUser) => {
-    if (!user?.id || !user?.hash || !user?.auth_date) {
-      return;
-    }
-
     setTelegramUser(user);
-    localStorage.setItem('gwa_tg_user', JSON.stringify({ user, savedAt: new Date().toISOString() } satisfies StoredTelegramSession));
+    localStorage.setItem('gwa_tg_user', JSON.stringify(user));
   };
 
   const logout = () => {

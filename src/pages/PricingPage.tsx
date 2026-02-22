@@ -10,7 +10,7 @@ export default function PricingPage() {
     <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-8">
       <h1 className="font-display text-4xl">{t('pricingTitle')}</h1>
       <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
-        Выберите тариф и оплачивайте только Telegram Stars (XTR). Лимиты применяются к генерации сказок, комиксов и озвучки.
+        Выберите пакет и оплачивайте Telegram Stars. Цены привязаны к реальному flow оплаты и использованию в генераторе.
       </p>
 
       <div className="mt-8 grid gap-5 md:grid-cols-2">
@@ -36,7 +36,7 @@ export default function PricingPage() {
                 navigate('/create');
               }}
             >
-              {pack.id === 'digital' ? 'Выбрать GudWin Light' : 'Выбрать GudWin Pro'}
+              {pack.id === 'digital' ? 'Выбрать Digital Pack' : 'Выбрать Starter Pack'}
             </button>
           </article>
         ))}

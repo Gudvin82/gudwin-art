@@ -3,7 +3,6 @@ import { useAppContext } from '@/contexts/AppContext';
 import { pricingPacks, statusMessages, stylePresets, type StylePreset } from '@/data/site-content';
 import { startTelegramStarsPayment } from '@/lib/telegram';
 import { generatePortraitViaApi } from '@/lib/ai';
-import { sanitizeUrl, validateUploadFile } from '@/lib/security';
 
 type Step = 'upload' | 'crop' | 'style' | 'generation' | 'result';
 
@@ -58,19 +57,10 @@ export default function CreatePage() {
   const [paid, setPaid] = useState(false);
   const [paying, setPaying] = useState(false);
   const [aiInfo, setAiInfo] = useState('');
-  const [inputError, setInputError] = useState('');
 
   useEffect(() => {
     setStyle(modeStyles[0] ?? null);
   }, [modeStyles]);
-
-  useEffect(() => {
-    return () => {
-      if (fileUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(fileUrl);
-      }
-    };
-  }, [fileUrl]);
 
   useEffect(() => {
     if (step !== 'generation') return;
@@ -94,23 +84,12 @@ export default function CreatePage() {
 
   const onFile = (file?: File) => {
     if (!file) return;
-    const validationError = validateUploadFile(file);
-    if (validationError) {
-      setInputError(validationError);
-      return;
-    }
-
-    if (fileUrl.startsWith('blob:')) {
-      URL.revokeObjectURL(fileUrl);
-    }
-
     const url = URL.createObjectURL(file);
     setFileUrl(url);
     setCropUrl(url);
     setCrop(baseCrop);
     setResultUrl('');
     setPaid(false);
-    setInputError('');
     setStep('crop');
   };
 
@@ -118,18 +97,9 @@ export default function CreatePage() {
     if (!cropUrl || !style) return;
     setStep('generation');
     setProgress(0);
-    let croppedImage = '';
-    let finalImage = '';
+    const croppedImage = await applyCrop(cropUrl, crop);
+    let finalImage = croppedImage;
     setAiInfo('');
-
-    try {
-      croppedImage = await applyCrop(cropUrl, crop);
-      finalImage = croppedImage;
-    } catch {
-      setInputError('Не удалось обработать изображение. Попробуйте другой файл.');
-      setStep('crop');
-      return;
-    }
 
     try {
       const aiGenerated = await generatePortraitViaApi({
@@ -174,8 +144,6 @@ export default function CreatePage() {
     setPaying(false);
   };
 
-  const safeResultUrl = sanitizeUrl(resultUrl);
-
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8">
       <h1 className="font-display text-3xl md:text-4xl">{t('generatorTitle')}</h1>
@@ -200,7 +168,6 @@ export default function CreatePage() {
                 className="hidden"
                 onChange={(event) => onFile(event.target.files?.[0])}
               />
-              {inputError && <p className="mt-3 text-xs text-rose-300">{inputError}</p>}
             </label>
           )}
 
@@ -303,16 +270,7 @@ export default function CreatePage() {
                     {paying ? 'Opening Telegram...' : `Оплатить ${selectedPackMeta.stars} Stars`}
                   </button>
                 ) : (
-                  <a
-                    href={safeResultUrl ?? '#'}
-                    download="gudwin-books-hd.jpg"
-                    className="rounded-full bg-emerald-400 px-5 py-2.5 text-sm font-semibold text-black"
-                    onClick={(event) => {
-                      if (!safeResultUrl) {
-                        event.preventDefault();
-                      }
-                    }}
-                  >
+                  <a href={resultUrl} download="gudwin-art-hd.jpg" className="rounded-full bg-emerald-400 px-5 py-2.5 text-sm font-semibold text-black">
                     {t('paidDownload')}
                   </a>
                 )}
