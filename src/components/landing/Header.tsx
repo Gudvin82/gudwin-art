@@ -1,130 +1,138 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Sun, Moon, Globe } from 'lucide-react';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Globe, Menu, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setIsScrolled(window.scrollY > 24);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const navItems = [
-    { href: '#about', label: t('nav.about') },
-    { href: '#services', label: t('nav.services') },
-    { href: '#advantages', label: t('nav.advantages') },
-    { href: '#cases', label: t('nav.cases') },
-    { href: '#contact', label: t('nav.contacts') },
+    { href: '#offer', label: t('nav.offer') },
+    { href: '#pricing', label: t('nav.pricing') },
+    { href: '#expertise', label: t('nav.expertise') },
+    { href: '#contact', label: t('nav.contact') },
   ];
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) element.scrollIntoView({ behavior: 'smooth' });
-    setIsMobileMenuOpen(false);
+  const languages = [
+    { code: 'ru' as const, label: 'RU' },
+    { code: 'en' as const, label: 'EN' },
+    { code: 'zh' as const, label: '中文' },
+  ];
+
+  const scrollTo = (href: string) => {
+    const node = document.querySelector(href);
+    if (node) node.scrollIntoView({ behavior: 'smooth' });
+    setIsMobileOpen(false);
   };
 
   return (
-    <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
+    <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
-        isScrolled ? 'bg-background/80 backdrop-blur-xl shadow-lg border-b border-border/50' : 'bg-transparent'
+        'fixed inset-x-0 top-0 z-50 transition-all duration-500',
+        isScrolled ? 'border-b border-border/70 bg-background/80 backdrop-blur-xl' : 'bg-transparent'
       )}
     >
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          <motion.a href="#" className="relative group" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">AM</span>
-            <span className="ml-2 text-sm md:text-base font-medium text-foreground hidden sm:inline">Анатолий Малышев</span>
-          </motion.a>
+      <div className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6">
+        <button onClick={() => scrollTo('#')} className="group flex items-center gap-3 text-left" type="button">
+          <img
+            src="/gudwin-logo.png"
+            alt="GudWin AI Agency"
+            className="h-10 w-[170px] rounded-lg border border-border/60 object-cover sm:h-12 sm:w-[210px]"
+          />
+        </button>
 
-          <nav className="hidden lg:flex items-center gap-1">
-            {navItems.map((item) => (
-              <motion.button
-                key={item.href}
-                onClick={() => scrollToSection(item.href)}
-                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+        <nav className="hidden items-center gap-1 lg:flex">
+          {navItems.map((item) => (
+            <motion.button
+              key={item.href}
+              onClick={() => scrollTo(item.href)}
+              className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              whileHover={{ y: -1 }}
+              type="button"
+            >
+              {item.label}
+            </motion.button>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <div className="hidden items-center gap-1 rounded-full border border-border/70 bg-card/70 p-1 sm:flex">
+            <Globe className="ml-1 h-4 w-4 text-muted-foreground" />
+            {languages.map((item) => (
+              <button
+                key={item.code}
+                onClick={() => setLanguage(item.code)}
+                className={cn(
+                  'rounded-full px-2.5 py-1 text-xs transition-colors',
+                  language === item.code ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+                )}
+                type="button"
               >
                 {item.label}
-                <motion.div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-primary rounded-full" initial={{ width: 0 }} whileHover={{ width: '80%' }} transition={{ duration: 0.2 }} />
-              </motion.button>
+              </button>
             ))}
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <motion.button
-              onClick={() => setLanguage(language === 'ru' ? 'en' : 'ru')}
-              className="flex items-center gap-1 px-3 py-2 rounded-full bg-muted/50 hover:bg-muted transition-colors text-sm font-medium"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Globe className="w-4 h-4" />
-              <span className="uppercase">{language}</span>
-            </motion.button>
-
-            <motion.button
-              onClick={toggleTheme}
-              className="p-2 rounded-full bg-muted/50 hover:bg-muted transition-colors"
-              whileHover={{ scale: 1.1, rotate: 15 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <AnimatePresence mode="wait">
-                {theme === 'dark' ? (
-                  <motion.div key="sun" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                    <Sun className="w-5 h-5 text-yellow-500" />
-                  </motion.div>
-                ) : (
-                  <motion.div key="moon" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                    <Moon className="w-5 h-5 text-primary" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.button>
-
-            <motion.button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-full bg-muted/50 hover:bg-muted transition-colors"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </motion.button>
           </div>
+
+          <button
+            onClick={() => setIsMobileOpen((prev) => !prev)}
+            className="rounded-full border border-border/70 bg-card/70 p-2 lg:hidden"
+            type="button"
+            aria-label="Toggle menu"
+          >
+            {isMobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
       </div>
 
       <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="lg:hidden bg-background/95 backdrop-blur-xl border-b border-border">
-            <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
-              {navItems.map((item, index) => (
-                <motion.button
+        {isMobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="border-b border-border/70 bg-background/95 backdrop-blur-xl lg:hidden"
+          >
+            <div className="container mx-auto space-y-3 px-4 py-4">
+              <div className="flex items-center justify-between rounded-xl border border-border/70 bg-card/70 p-2">
+                {languages.map((item) => (
+                  <button
+                    key={item.code}
+                    onClick={() => setLanguage(item.code)}
+                    className={cn(
+                      'rounded-lg px-3 py-2 text-sm',
+                      language === item.code ? 'bg-primary text-primary-foreground' : 'text-muted-foreground'
+                    )}
+                    type="button"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              {navItems.map((item) => (
+                <button
                   key={item.href}
-                  onClick={() => scrollToSection(item.href)}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="px-4 py-3 text-left text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors"
+                  onClick={() => scrollTo(item.href)}
+                  className="block w-full rounded-xl border border-border/70 bg-card/70 px-4 py-3 text-left text-sm font-medium"
+                  type="button"
                 >
                   {item.label}
-                </motion.button>
+                </button>
               ))}
-            </nav>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </header>
   );
 };
 

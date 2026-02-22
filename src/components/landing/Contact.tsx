@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { CheckCircle2, Loader2, MessageCircle, Send, ShieldCheck, TimerReset } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { Send, MessageCircle, Phone, Mail, Loader2, CheckCircle2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
 
 interface FormData {
   name: string;
   phone: string;
-  email: string;
+  telegram: string;
   message: string;
+  consent: boolean;
+  website?: string;
 }
 
 const Contact = () => {
@@ -29,7 +31,14 @@ const Contact = () => {
     setIsSubmitting(true);
     try {
       const { error } = await supabase.functions.invoke('send-telegram', {
-        body: data,
+        body: {
+          name: data.name.trim(),
+          phone: data.phone.trim(),
+          telegram: data.telegram.trim(),
+          message: data.message.trim(),
+          consent: data.consent,
+          website: data.website || '',
+        },
       });
 
       if (error) throw error;
@@ -39,185 +48,154 @@ const Contact = () => {
       reset();
       setTimeout(() => setIsSuccess(false), 3000);
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error(error);
       toast.error(t('contact.error'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const contacts = [
-    {
-      icon: MessageCircle,
-      label: 'Telegram',
-      value: '@a_malishev',
-      href: 'https://t.me/a_malishev',
-      gradient: 'from-blue-500 to-cyan-500',
-    },
-    {
-      icon: Phone,
-      label: 'WhatsApp',
-      value: '+7 (921) 999-09-91',
-      href: 'https://wa.me/79219990991',
-      gradient: 'from-green-500 to-emerald-500',
-    },
-    {
-      icon: Mail,
-      label: 'Email',
-      value: '9990991@mail.ru',
-      href: 'mailto:9990991@mail.ru',
-      gradient: 'from-purple-500 to-pink-500',
-    },
-  ];
-
   return (
-    <section id="contact" className="py-20 md:py-32 bg-muted/30">
+    <section id="contact" className="py-20 md:py-28">
       <div className="container mx-auto px-4 md:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12 md:mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            {t('contact.title')}
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {t('contact.subtitle')}
-          </p>
-          <div className="w-20 h-1 bg-gradient-to-r from-primary to-secondary mx-auto rounded-full mt-6" />
-        </motion.div>
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="font-display text-3xl md:text-5xl">{t('contact.title')}</h2>
+          <p className="mt-4 text-muted-foreground">{t('contact.subtitle')}</p>
+        </div>
 
-        <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-8 md:gap-12">
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+        <div className="mx-auto mt-10 grid max-w-6xl gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+          <motion.form
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            onSubmit={handleSubmit(onSubmit)}
+            className="rounded-3xl border border-border/70 bg-card/75 p-7 shadow-[0_0_32px_hsl(var(--primary)/0.12)]"
           >
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              <div>
-                <input
-                  {...register('name', { required: true })}
-                  placeholder={t('contact.name')}
-                  className={`w-full px-6 py-4 rounded-xl bg-card border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 ${
-                    errors.name ? 'border-destructive' : 'border-border/50 focus:border-primary'
-                  }`}
-                />
-              </div>
-
-              <div>
-                <input
-                  {...register('phone', { required: true })}
-                  placeholder={t('contact.phone')}
-                  className={`w-full px-6 py-4 rounded-xl bg-card border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 ${
-                    errors.phone ? 'border-destructive' : 'border-border/50 focus:border-primary'
-                  }`}
-                />
-              </div>
-
-              <div>
-                <input
-                  {...register('email', {
-                    required: true,
-                    pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  })}
-                  placeholder={t('contact.email')}
-                  className={`w-full px-6 py-4 rounded-xl bg-card border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 ${
-                    errors.email ? 'border-destructive' : 'border-border/50 focus:border-primary'
-                  }`}
-                />
-              </div>
-
-              <div>
-                <textarea
-                  {...register('message')}
-                  placeholder={t('contact.message')}
-                  rows={4}
-                  className="w-full px-6 py-4 rounded-xl bg-card border border-border/50 focus:border-primary transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
-                />
-              </div>
-
-              <motion.button
-                type="submit"
-                disabled={isSubmitting || isSuccess}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={`w-full py-4 px-8 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-300 ${
-                  isSuccess
-                    ? 'bg-green-500 text-white'
-                    : 'bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:shadow-primary/25'
+            <h3 className="mb-4 font-display text-2xl">Форма заявки</h3>
+            <div className="space-y-4">
+              <input
+                {...register('name', { required: true, maxLength: 80 })}
+                placeholder={t('contact.name')}
+                className={`w-full rounded-xl border bg-background/80 px-4 py-3 text-sm outline-none transition ${
+                  errors.name ? 'border-destructive' : 'border-border/70 focus:border-primary'
                 }`}
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Отправка...</span>
-                  </>
-                ) : isSuccess ? (
-                  <>
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span>Отправлено!</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-5 h-5" />
-                    <span>{t('contact.submit')}</span>
-                  </>
-                )}
-              </motion.button>
-            </form>
-          </motion.div>
+              />
+              <input
+                {...register('phone', {
+                  required: true,
+                  pattern: /^[+0-9()\-\s]{7,25}$/,
+                })}
+                placeholder={t('contact.phone')}
+                className={`w-full rounded-xl border bg-background/80 px-4 py-3 text-sm outline-none transition ${
+                  errors.phone ? 'border-destructive' : 'border-border/70 focus:border-primary'
+                }`}
+              />
+              <input
+                {...register('telegram', {
+                  required: true,
+                  pattern: /^@?[a-zA-Z0-9_]{5,32}$/,
+                })}
+                placeholder={t('contact.telegram')}
+                className={`w-full rounded-xl border bg-background/80 px-4 py-3 text-sm outline-none transition ${
+                  errors.telegram ? 'border-destructive' : 'border-border/70 focus:border-primary'
+                }`}
+              />
+              <textarea
+                {...register('message', { required: true, minLength: 10, maxLength: 2000 })}
+                placeholder={t('contact.message')}
+                rows={4}
+                className={`w-full resize-none rounded-xl border bg-background/80 px-4 py-3 text-sm outline-none transition ${
+                  errors.message ? 'border-destructive' : 'border-border/70 focus:border-primary'
+                }`}
+              />
+              <input
+                {...register('website')}
+                autoComplete="off"
+                tabIndex={-1}
+                className="hidden"
+                aria-hidden="true"
+              />
 
-          {/* Contact Links */}
+              <label className="flex items-start gap-3 text-xs text-muted-foreground">
+                <input
+                  type="checkbox"
+                  {...register('consent', { required: true })}
+                  className="mt-0.5 h-4 w-4 rounded border-border text-primary"
+                />
+                <span>
+                  {t('contact.consent')} <a href="/legal/privacy-policy.html" className="text-primary underline">{t('footer.policy')}</a>{' '}
+                  / <a href="/legal/terms.html" className="text-primary underline">{t('footer.terms')}</a>
+                </span>
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting || isSuccess}
+              className={`mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 font-medium text-primary-foreground transition ${
+                isSuccess ? 'bg-green-600' : 'bg-gradient-to-r from-primary to-secondary hover:brightness-110'
+              }`}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  {t('contact.sending')}
+                </>
+              ) : isSuccess ? (
+                <>
+                  <CheckCircle2 className="h-4 w-4" />
+                  {t('contact.sent')}
+                </>
+              ) : (
+                <>
+                  <Send className="h-4 w-4" />
+                  {t('contact.submit')}
+                </>
+              )}
+            </button>
+          </motion.form>
+
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="space-y-6"
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="space-y-5"
           >
-            {contacts.map((contact, index) => {
-              const Icon = contact.icon;
-              return (
-                <motion.a
-                  key={index}
-                  href={contact.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.02, x: 10 }}
-                  className="group flex items-center gap-6 p-6 rounded-2xl bg-card border border-border/50 hover:border-primary/50 transition-all duration-300"
-                >
-                  <div
-                    className={`w-14 h-14 rounded-xl bg-gradient-to-br ${contact.gradient} flex items-center justify-center flex-shrink-0`}
-                  >
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-sm text-muted-foreground mb-1">{contact.label}</div>
-                    <div className="font-semibold text-lg group-hover:text-primary transition-colors">
-                      {contact.value}
-                    </div>
-                  </div>
-                </motion.a>
-              );
-            })}
-
-            {/* Location */}
-            <div className="p-6 rounded-2xl bg-card border border-border/50">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
-                <span className="font-medium">Санкт-Петербург, Россия</span>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Консультации проводятся онлайн по всему миру и оффлайн в Санкт-Петербурге
+            <div className="rounded-3xl border border-border/70 bg-card/75 p-6">
+              <h3 className="mb-4 font-display text-2xl">Telegram-бот</h3>
+              <a
+                href="https://t.me/malishev_bot"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 rounded-2xl border border-border/70 bg-background/60 p-5 transition hover:border-primary/70"
+              >
+                <span className="rounded-xl border border-border/70 bg-background/70 p-2">
+                  <MessageCircle className="h-5 w-5 text-primary" />
+                </span>
+                <span>
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">Telegram Bot</p>
+                  <p className="text-sm font-medium">@malishev_bot</p>
+                </span>
+              </a>
+              <p className="mt-4 text-sm text-muted-foreground">
+                Быстрый канал связи для первого контакта, уточнения запроса и назначения стратегической сессии.
               </p>
+            </div>
+
+            <div className="rounded-3xl border border-border/70 bg-card/75 p-6">
+              <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Почему через бота</h4>
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <div className="flex items-start gap-3">
+                  <TimerReset className="mt-0.5 h-4 w-4 text-primary" />
+                  <span>Обычно отвечаем в течение 15-60 минут в рабочее время.</span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <ShieldCheck className="mt-0.5 h-4 w-4 text-primary" />
+                  <span>Фиксируем запрос структурно и сразу передаем в рабочий контур команды.</span>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>

@@ -1,0 +1,40 @@
+<svg width="900" height="220" viewBox="0 0 900 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gold" x1="90" y1="40" x2="520" y2="170" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF2B0"/>
+      <stop offset="0.45" stop-color="#F7C95A"/>
+      <stop offset="1" stop-color="#C58A18"/>
+    </linearGradient>
+    <linearGradient id="neon" x1="580" y1="50" x2="840" y2="190" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00ECFF"/>
+      <stop offset="1" stop-color="#FFD046"/>
+    </linearGradient>
+    <filter id="glow" x="0" y="0" width="900" height="220" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="900" height="220" rx="28" fill="black"/>
+
+  <g filter="url(#glow)">
+    <text x="70" y="140" font-size="104" font-weight="700" font-family="Georgia, 'Times New Roman', serif" fill="url(#gold)">
+      GudWin AI
+    </text>
+  </g>
+
+  <g transform="translate(640 32)">
+    <path d="M110 20C150 20 182 52 182 92C182 132 150 164 110 164C70 164 38 132 38 92C38 52 70 20 110 20Z" stroke="url(#neon)" stroke-width="4"/>
+    <path d="M110 20V164" stroke="url(#neon)" stroke-width="3"/>
+    <path d="M57 58H90M57 90H80M57 122H90M130 58H163M140 90H163M130 122H163" stroke="url(#neon)" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="90" cy="58" r="4" fill="#00ECFF"/>
+    <circle cx="80" cy="90" r="4" fill="#00ECFF"/>
+    <circle cx="90" cy="122" r="4" fill="#00ECFF"/>
+    <circle cx="130" cy="58" r="4" fill="#FFD046"/>
+    <circle cx="140" cy="90" r="4" fill="#FFD046"/>
+    <circle cx="130" cy="122" r="4" fill="#FFD046"/>
+  </g>
+</svg>

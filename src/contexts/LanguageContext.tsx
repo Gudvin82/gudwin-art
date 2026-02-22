@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Language = 'ru' | 'en';
+type Language = 'ru' | 'en' | 'zh';
 
 interface LanguageContextType {
   language: Language;
@@ -10,229 +10,264 @@ interface LanguageContextType {
 
 const translations: Record<Language, Record<string, string>> = {
   ru: {
-    // Header
-    'nav.about': 'Обо мне',
-    'nav.services': 'Услуги',
-    'nav.advantages': 'Преимущества',
-    'nav.cases': 'Кейсы',
-    'nav.contacts': 'Контакты',
+    'brand.name': 'GudWin AI Agency',
+    'brand.short': 'GW',
 
-    // Hero
-    'hero.badge': 'AI & Антикризисный консалтинг',
-    'hero.title': 'Антикризисное управление на базе AI-технологий',
-    'hero.subtitle': 'Вывожу бизнес из кризиса, внедряю AI-автоматизацию и строю стратегии роста. 20+ лет управленческого опыта.',
-    'hero.cta': 'Получить консультацию',
-    'hero.stat1.value': '20+',
-    'hero.stat1.label': 'лет опыта',
-    'hero.stat2.value': '1000+',
-    'hero.stat2.label': 'сотрудников',
-    'hero.stat3.value': '50+',
-    'hero.stat3.label': 'проектов',
+    'nav.offer': 'Решения',
+    'nav.pricing': 'Цены',
+    'nav.expertise': 'О компании',
+    'nav.contact': 'Связаться',
 
-    // About
-    'about.title': 'Обо мне',
-    'about.intro': 'Анатолий Малышев — бизнес-консультант, антикризисный управляющий, эксперт в AI-технологиях. Более 20 лет помогаю компаниям преодолевать кризисы, выстраивать процессы и внедрять инновации.',
-    'about.experience': 'лет опыта',
-    'about.employees': 'сотрудников под управлением',
-    'about.projects': 'успешных проектов',
-    'about.books': 'книг по бизнесу',
+    'hero.badge': 'Антикризисное управление + AI агентство полного цикла',
+    'hero.title': 'Стабилизируем бизнес и строим AI-систему',
+    'hero.subtitle': 'Превращаем хаос в управляемую систему: антикризисные решения, AI-автоматизация и рост прибыли на языке конкретных цифр.',
+    'hero.cta.primary': 'Получить стратегический разбор',
+    'hero.cta.secondary': 'Смотреть решения и цены',
+    'hero.metric.1.value': '20+',
+    'hero.metric.1.label': 'лет управленческой практики',
+    'hero.metric.2.value': 'TEAM',
+    'hero.metric.2.label': 'команда профессионалов',
+    'hero.metric.3.value': '50+',
+    'hero.metric.3.label': 'проектов трансформации',
+    'hero.chip.1': 'Антикризисное управление',
+    'hero.chip.2': 'AI агентство полного цикла',
+    'hero.chip.3': 'Системный рост компании',
 
-    'about.skills.title': 'Ключевые компетенции',
-    'about.skill.1': 'Антикризисное управление',
-    'about.skill.2': 'AI и нейросети (ChatGPT, Claude, MidJourney)',
-    'about.skill.3': 'Стратегическое планирование',
-    'about.skill.4': 'Автоматизация бизнес-процессов',
-    'about.skill.5': 'Финансовая реструктуризация',
-    'about.skill.6': 'Командная трансформация',
+    'offer.title': 'Решения, которые дают деньги, а не отчеты',
+    'offer.subtitle': 'Подключаемся как операционный AI-партнер: быстро снимаем риски, запускаем систему роста и закрепляем результат на KPI.',
 
-    'about.booksSection': 'Мои книги',
-    'about.booksDesc': '25+ книг по бизнесу, управлению и личной эффективности',
-    'about.booksLink': 'Перейти к книгам',
-    'about.musicLink': 'Моя музыка',
-    'about.gamesLink': 'Мои игры',
+    'offer.crisis.title': 'Антикризисный контур',
+    'offer.crisis.desc': 'Вытаскиваем бизнес из турбулентности: закрываем кассовые разрывы, наводим управленческий порядок и возвращаем контроль собственнику.',
+    'offer.crisis.1': 'Экспресс-диагностика узких мест',
+    'offer.crisis.2': 'План стабилизации на 14 дней',
+    'offer.crisis.3': 'Операционная и финансовая реструктуризация',
+    'offer.crisis.4': 'Выход в стабильный денежный поток',
 
-    // Services
-    'services.title': 'Направления работы',
-    'services.ai_auto.title': 'AI Автоматизация',
-    'services.ai_auto.desc': 'Внедряю AI-решения для оптимизации бизнес-процессов, снижения издержек и повышения эффективности.',
-    'services.ai_auto.1': 'Аудит и автоматизация процессов',
-    'services.ai_auto.2': 'Интеграция нейросетей в workflow',
-    'services.ai_auto.3': 'Внедрение AI-помощников и чат-ботов',
-    'services.ai_auto.4': 'Оптимизация с помощью данных и аналитики',
+    'offer.ai.title': 'AI-контур полного цикла',
+    'offer.ai.desc': 'Собираем AI-контур под ключ: от стратегии и архитектуры до работающих агентов, которые экономят ресурсы и ускоряют продажи.',
+    'offer.ai.1': 'AI-аудит процессов и ролей',
+    'offer.ai.2': 'Проектирование воронки автоматизаций',
+    'offer.ai.3': 'Запуск AI-агентов в продажах, сервисе и аналитике',
+    'offer.ai.4': 'Масштабирование и обучение команды',
 
-    'services.ai_consult.title': 'AI Консалтинг',
-    'services.ai_consult.desc': 'Разрабатываю стратегии внедрения AI в бизнес, обучаю команды и сопровождаю трансформацию.',
-    'services.ai_consult.1': 'AI-стратегия для вашего бизнеса',
-    'services.ai_consult.2': 'Выбор и внедрение инструментов',
-    'services.ai_consult.3': 'Обучение команды работе с AI',
-    'services.ai_consult.4': 'Сопровождение цифровой трансформации',
+    'offer.path.title': 'Как идем к результату',
+    'offer.path.1.title': 'Шаг 1. Диагностика',
+    'offer.path.1.desc': 'Выявляем точки потерь денег, времени и качества решений.',
+    'offer.path.2.title': 'Шаг 2. Архитектура решения',
+    'offer.path.2.desc': 'Фиксируем план с KPI, этапами и зонами ответственности.',
+    'offer.path.3.title': 'Шаг 3. Внедрение',
+    'offer.path.3.desc': 'Запускаем, донастраиваем и закрепляем результат на метриках.',
 
-    'services.crisis.title': 'Антикризисное управление',
-    'services.crisis.desc': 'Стабилизирую бизнес в кризис, восстанавливаю рентабельность и выстраиваю устойчивую модель роста.',
-    'services.crisis.1': 'Экспресс-диагностика за 14 дней',
-    'services.crisis.2': 'Устранение кассовых разрывов',
-    'services.crisis.3': 'Реструктуризация долгов и расходов',
-    'services.crisis.4': 'Вывод на прибыль за 90 дней',
+    'expertise.title': 'О компании и экспертизе',
+    'expertise.intro': 'GudWin AI Agency основано на практическом опыте антикризисного управления и глубокой AI-компетенции. В основе подхода - жесткая управленческая дисциплина, системная аналитика и фокус на измеримую прибыль клиента.',
+    'expertise.skills.title': 'Ключевые компетенции',
+    'expertise.skill.1': 'Антикризисное управление в высокорисковых сценариях',
+    'expertise.skill.2': 'Стратегическая и операционная трансформация',
+    'expertise.skill.3': 'Финансовая стабилизация и реструктуризация',
+    'expertise.skill.4': 'AI-агенты, автоматизация и интеграция в процессы',
+    'expertise.skill.5': 'Рост продаж и повышение эффективности команд',
+    'expertise.skill.6': 'Управление изменениями на уровне собственника и C-level',
 
-    // Advantages
-    'advantages.title': 'Почему выбирают меня',
-    'advantages.1.title': 'Реальный опыт, а не теория',
-    'advantages.1.desc': '20+ лет на руководящих позициях. Управлял командами до 1000 человек.',
-    'advantages.2.title': 'AI-экспертиза',
-    'advantages.2.desc': 'Не просто знаю об AI — внедряю нейросети в реальные бизнес-процессы.',
-    'advantages.3.title': 'Комплексный подход',
-    'advantages.3.desc': 'Работаю на стыке стратегии, технологий и управления людьми.',
-    'advantages.4.title': 'Результат в цифрах',
-    'advantages.4.desc': 'Каждый кейс — с измеримыми показателями. Средний ROI проектов — x3.',
-    'advantages.5.title': 'Готовая команда',
-    'advantages.5.desc': 'При необходимости привлекаю экспертов: маркетологов, финансистов, разработчиков.',
-    'advantages.6.title': 'Автор 25+ книг',
-    'advantages.6.desc': 'Системное мышление, подкреплённое глубокой экспертизой и практикой.',
-
-    // Cases
-    'cases.title': 'Кейсы и результаты',
-    'cases.1.title': 'Производственная компания',
-    'cases.1.desc': 'Вывод из убытков за 90 дней. Оптимизация расходов и увеличение маржинальности на 25%',
-    'cases.2.title': 'IT-стартап',
-    'cases.2.desc': 'Внедрение AI-автоматизации снизило операционные расходы на 40%',
-    'cases.3.title': 'Сеть ресторанов',
-    'cases.3.desc': 'Реструктуризация кредитов сэкономила более 2 млн рублей',
-    'cases.4.title': 'Логистическая компания',
-    'cases.4.desc': 'Рост выручки на 60% за 6 месяцев после внедрения AI-стратегии',
-    'cases.5.title': 'Розничная сеть',
-    'cases.5.desc': 'Внедрение AI-аналитики увеличило конверсию продаж на 35%',
-
-    // Contact
-    'contact.title': 'Готовы трансформировать бизнес?',
-    'contact.subtitle': 'Оставьте заявку — проведу бесплатную 30-минутную диагностику вашего бизнеса',
+    'contact.title': 'Запросить стратегическую сессию и план роста',
+    'contact.subtitle': 'Опишите цель бизнеса и точку боли. Вернемся с сильным планом действий, сроками и фокусом на деньги.',
     'contact.name': 'Ваше имя',
     'contact.phone': 'Телефон',
-    'contact.email': 'Email',
-    'contact.message': 'Опишите вашу задачу',
-    'contact.submit': 'Отправить заявку',
-    'contact.success': 'Заявка отправлена! Свяжусь с вами в ближайшее время.',
-    'contact.error': 'Ошибка отправки. Попробуйте позже.',
+    'contact.telegram': 'Ваш Telegram (@username)',
+    'contact.message': 'Кратко опишите задачу',
+    'contact.consent': 'Я согласен(а) на обработку персональных данных и принимаю условия документов.',
+    'contact.submit': 'Отправить запрос',
+    'contact.sending': 'Отправка...',
+    'contact.sent': 'Отправлено',
+    'contact.success': 'Запрос отправлен. Мы свяжемся с вами в Telegram.',
+    'contact.error': 'Ошибка отправки. Попробуйте еще раз.',
 
-    // Footer
+    'footer.desc': 'GudWin AI Agency - антикризисное управление и AI агентство полного цикла.',
     'footer.rights': 'Все права защищены',
-    'footer.desc': 'Антикризисное управление и AI-консалтинг. Помогаю бизнесу расти с помощью технологий.',
+    'footer.company': 'Самозанятый: Малышев А. Н. (НПД)',
+    'footer.requisites': 'Все чеки формируются через приложение "Мой налог"',
+    'footer.address': 'Адрес: Российская Федерация, г. Санкт-Петербург',
+    'footer.hours': 'Режим работы: Пн-Пт 10:00-19:00 (МСК)',
+    'footer.legal': 'Юридические документы',
+    'footer.policy': 'Политика обработки персональных данных',
+    'footer.consent': 'Согласие на обработку персональных данных',
+    'footer.terms': 'Пользовательское соглашение',
   },
   en: {
-    // Header
-    'nav.about': 'About',
-    'nav.services': 'Services',
-    'nav.advantages': 'Advantages',
-    'nav.cases': 'Cases',
-    'nav.contacts': 'Contact',
+    'brand.name': 'GudWin AI Agency',
+    'brand.short': 'GW',
 
-    // Hero
-    'hero.badge': 'AI & Crisis Management',
-    'hero.title': 'Crisis Management Powered by AI Technologies',
-    'hero.subtitle': 'I help businesses overcome crises, implement AI automation, and build growth strategies. 20+ years of management experience.',
-    'hero.cta': 'Get a Consultation',
-    'hero.stat1.value': '20+',
-    'hero.stat1.label': 'years of experience',
-    'hero.stat2.value': '1000+',
-    'hero.stat2.label': 'employees managed',
-    'hero.stat3.value': '50+',
-    'hero.stat3.label': 'projects',
+    'nav.offer': 'Solutions',
+    'nav.pricing': 'Pricing',
+    'nav.expertise': 'Company',
+    'nav.contact': 'Contact',
 
-    // About
-    'about.title': 'About Me',
-    'about.intro': 'Anatoly Malyshev — business consultant, crisis manager, and AI technology expert. For over 20 years, I help companies overcome crises, build processes, and implement innovations.',
-    'about.experience': 'years of experience',
-    'about.employees': 'employees managed',
-    'about.projects': 'successful projects',
-    'about.books': 'business books',
+    'hero.badge': 'Crisis Management + Full-Cycle AI Agency',
+    'hero.title': 'GudWin AI Agency: stabilize operations and launch AI-driven growth',
+    'hero.subtitle': 'We step into critical situations, restore control quickly, and deploy AI agents that produce measurable business outcomes.',
+    'hero.cta.primary': 'Request Audit',
+    'hero.cta.secondary': 'Explore Solutions',
+    'hero.metric.1.value': '20+',
+    'hero.metric.1.label': 'years of management practice',
+    'hero.metric.2.value': 'TEAM',
+    'hero.metric.2.label': 'team of professionals',
+    'hero.metric.3.value': '50+',
+    'hero.metric.3.label': 'transformation projects',
+    'hero.chip.1': 'Crisis Management',
+    'hero.chip.2': 'Full-Cycle AI Agency',
+    'hero.chip.3': 'Systemic Business Growth',
 
-    'about.skills.title': 'Core Competencies',
-    'about.skill.1': 'Crisis Management',
-    'about.skill.2': 'AI & Neural Networks (ChatGPT, Claude, MidJourney)',
-    'about.skill.3': 'Strategic Planning',
-    'about.skill.4': 'Business Process Automation',
-    'about.skill.5': 'Financial Restructuring',
-    'about.skill.6': 'Team Transformation',
+    'offer.title': 'What We Do',
+    'offer.subtitle': 'Two integrated tracks: anti-crisis execution and technology acceleration with AI.',
 
-    'about.booksSection': 'My Books',
-    'about.booksDesc': '25+ books on business, management, and personal efficiency',
-    'about.booksLink': 'View Books',
-    'about.musicLink': 'My Music',
-    'about.gamesLink': 'My Games',
+    'offer.crisis.title': 'Crisis Track',
+    'offer.crisis.desc': 'We identify risks, close cash gaps, and restore operational and financial control.',
+    'offer.crisis.1': 'Rapid bottleneck diagnostics',
+    'offer.crisis.2': '14-day stabilization plan',
+    'offer.crisis.3': 'Operational and financial restructuring',
+    'offer.crisis.4': 'Transition to stable cash flow',
 
-    // Services
-    'services.title': 'Services',
-    'services.ai_auto.title': 'AI Automation',
-    'services.ai_auto.desc': 'I implement AI solutions to optimize business processes, reduce costs, and improve efficiency.',
-    'services.ai_auto.1': 'Process audit and automation',
-    'services.ai_auto.2': 'Neural network integration into workflows',
-    'services.ai_auto.3': 'AI assistants and chatbot deployment',
-    'services.ai_auto.4': 'Data-driven optimization and analytics',
+    'offer.ai.title': 'Full-Cycle AI Track',
+    'offer.ai.desc': 'We design and implement AI architecture for your business model and optimize it against KPIs.',
+    'offer.ai.1': 'AI audit of workflows and roles',
+    'offer.ai.2': 'Automation funnel architecture',
+    'offer.ai.3': 'AI agents for sales, service, and analytics',
+    'offer.ai.4': 'Scale-up and team enablement',
 
-    'services.ai_consult.title': 'AI Consulting',
-    'services.ai_consult.desc': 'I develop AI adoption strategies, train teams, and guide digital transformation.',
-    'services.ai_consult.1': 'AI strategy for your business',
-    'services.ai_consult.2': 'Tool selection and implementation',
-    'services.ai_consult.3': 'Team AI training',
-    'services.ai_consult.4': 'Digital transformation support',
+    'offer.path.title': 'Execution Model',
+    'offer.path.1.title': 'Step 1. Diagnostics',
+    'offer.path.1.desc': 'Find where money, time, and decision quality are lost.',
+    'offer.path.2.title': 'Step 2. Solution Architecture',
+    'offer.path.2.desc': 'Build a KPI-linked roadmap with clear ownership.',
+    'offer.path.3.title': 'Step 3. Implementation',
+    'offer.path.3.desc': 'Launch, tune, and lock outcomes into performance metrics.',
 
-    'services.crisis.title': 'Crisis Management',
-    'services.crisis.desc': 'I stabilize businesses in crisis, restore profitability, and build sustainable growth models.',
-    'services.crisis.1': 'Express diagnostics in 14 days',
-    'services.crisis.2': 'Eliminating cash flow gaps',
-    'services.crisis.3': 'Debt and expense restructuring',
-    'services.crisis.4': 'Path to profitability in 90 days',
+    'expertise.title': 'About Company and Expertise',
+    'expertise.intro': 'GudWin AI Agency combines hands-on crisis leadership with deep AI execution. The approach is built on management discipline, systems thinking, and measurable client profitability.',
+    'expertise.skills.title': 'Core Competencies',
+    'expertise.skill.1': 'Crisis management in high-risk environments',
+    'expertise.skill.2': 'Strategic and operational transformation',
+    'expertise.skill.3': 'Financial stabilization and restructuring',
+    'expertise.skill.4': 'AI agents, automation, and process integration',
+    'expertise.skill.5': 'Sales acceleration and team efficiency',
+    'expertise.skill.6': 'Change execution with owners and C-level teams',
 
-    // Advantages
-    'advantages.title': 'Why Choose Me',
-    'advantages.1.title': 'Real Experience, Not Theory',
-    'advantages.1.desc': '20+ years in leadership roles. Managed teams of up to 1,000 people.',
-    'advantages.2.title': 'AI Expertise',
-    'advantages.2.desc': 'I don\'t just know about AI — I integrate neural networks into real business processes.',
-    'advantages.3.title': 'Comprehensive Approach',
-    'advantages.3.desc': 'Working at the intersection of strategy, technology, and people management.',
-    'advantages.4.title': 'Results in Numbers',
-    'advantages.4.desc': 'Every case with measurable KPIs. Average project ROI — x3.',
-    'advantages.5.title': 'Ready Team',
-    'advantages.5.desc': 'When needed, I bring in experts: marketers, financiers, developers.',
-    'advantages.6.title': 'Author of 25+ Books',
-    'advantages.6.desc': 'Systems thinking backed by deep expertise and practice.',
-
-    // Cases
-    'cases.title': 'Cases & Results',
-    'cases.1.title': 'Manufacturing Company',
-    'cases.1.desc': 'Exit from losses in 90 days. Cost optimization and 25% margin increase',
-    'cases.2.title': 'IT Startup',
-    'cases.2.desc': 'AI automation reduced operational costs by 40%',
-    'cases.3.title': 'Restaurant Chain',
-    'cases.3.desc': 'Credit restructuring saved over 2 million rubles',
-    'cases.4.title': 'Logistics Company',
-    'cases.4.desc': '60% revenue growth in 6 months after AI strategy implementation',
-    'cases.5.title': 'Retail Chain',
-    'cases.5.desc': 'AI analytics implementation increased sales conversion by 35%',
-
-    // Contact
-    'contact.title': 'Ready to Transform Your Business?',
-    'contact.subtitle': 'Leave a request — I\'ll conduct a free 30-minute diagnostics of your business',
+    'contact.title': 'Request a Strategy Session',
+    'contact.subtitle': 'Share your task and Telegram contact. We will return with an action plan.',
     'contact.name': 'Your name',
     'contact.phone': 'Phone',
-    'contact.email': 'Email',
-    'contact.message': 'Describe your challenge',
+    'contact.telegram': 'Your Telegram (@username)',
+    'contact.message': 'Briefly describe your challenge',
+    'contact.consent': 'I agree to personal data processing and accept the legal documents.',
     'contact.submit': 'Send Request',
-    'contact.success': 'Request sent! I will contact you soon.',
-    'contact.error': 'Sending error. Try again later.',
+    'contact.sending': 'Sending...',
+    'contact.sent': 'Sent',
+    'contact.success': 'Request sent. We will contact you in Telegram.',
+    'contact.error': 'Failed to send. Please try again.',
 
-    // Footer
+    'footer.desc': 'GudWin AI Agency - crisis management and full-cycle AI implementation.',
     'footer.rights': 'All rights reserved',
-    'footer.desc': 'Crisis management and AI consulting. Helping businesses grow through technology.',
+    'footer.company': 'Self-employed: Malyshev A. N. (NPD)',
+    'footer.requisites': 'All receipts are issued via the "My Tax" app',
+    'footer.address': 'Address: Saint Petersburg, Russian Federation',
+    'footer.hours': 'Working hours: Mon-Fri 10:00-19:00 (MSK)',
+    'footer.legal': 'Legal Documents',
+    'footer.policy': 'Personal Data Processing Policy',
+    'footer.consent': 'Personal Data Processing Consent',
+    'footer.terms': 'Terms of Use',
+  },
+  zh: {
+    'brand.name': 'GudWin AI Agency',
+    'brand.short': 'GW',
+
+    'nav.offer': '解决方案',
+    'nav.pricing': '价格',
+    'nav.expertise': '公司介绍',
+    'nav.contact': '联系',
+
+    'hero.badge': '危机管理 + 全流程 AI 机构',
+    'hero.title': 'GudWin AI Agency：稳住经营并启动 AI 增长系统',
+    'hero.subtitle': '我们在关键节点介入，快速恢复企业控制力，并部署可产生可量化结果的 AI 智能体。',
+    'hero.cta.primary': '申请审计',
+    'hero.cta.secondary': '查看方案',
+    'hero.metric.1.value': '20+',
+    'hero.metric.1.label': '年管理实战经验',
+    'hero.metric.2.value': 'TEAM',
+    'hero.metric.2.label': '专业团队',
+    'hero.metric.3.value': '50+',
+    'hero.metric.3.label': '转型项目',
+    'hero.chip.1': '危机管理',
+    'hero.chip.2': '全流程 AI 机构',
+    'hero.chip.3': '系统化增长',
+
+    'offer.title': '我们的工作内容',
+    'offer.subtitle': '双引擎并行：危机稳定化 + AI 技术加速。',
+
+    'offer.crisis.title': '危机管理模块',
+    'offer.crisis.desc': '识别风险，修复现金流缺口，恢复运营与财务可控性。',
+    'offer.crisis.1': '快速识别核心瓶颈',
+    'offer.crisis.2': '14天稳定化计划',
+    'offer.crisis.3': '运营与财务重组',
+    'offer.crisis.4': '进入稳定现金流阶段',
+
+    'offer.ai.title': '全流程 AI 模块',
+    'offer.ai.desc': '基于业务模型设计并落地 AI 架构，以 KPI 为导向持续优化。',
+    'offer.ai.1': '业务流程与岗位 AI 审计',
+    'offer.ai.2': '自动化漏斗架构设计',
+    'offer.ai.3': '销售/服务/分析 AI 智能体上线',
+    'offer.ai.4': '规模化复制与团队赋能',
+
+    'offer.path.title': '执行路径',
+    'offer.path.1.title': '步骤1：诊断',
+    'offer.path.1.desc': '定位资金、时间和决策质量的损耗点。',
+    'offer.path.2.title': '步骤2：方案架构',
+    'offer.path.2.desc': '制定KPI、里程碑与责任矩阵。',
+    'offer.path.3.title': '步骤3：落地执行',
+    'offer.path.3.desc': '上线、调优并固化到可见指标。',
+
+    'expertise.title': '公司与专业能力',
+    'expertise.intro': 'GudWin AI Agency 将危机管理实战与 AI 落地能力结合，强调管理纪律、系统分析与客户利润提升。',
+    'expertise.skills.title': '核心能力',
+    'expertise.skill.1': '高风险场景危机管理',
+    'expertise.skill.2': '战略与运营转型',
+    'expertise.skill.3': '财务稳定与重组',
+    'expertise.skill.4': 'AI 智能体、自动化与流程集成',
+    'expertise.skill.5': '销售增长与团队效率提升',
+    'expertise.skill.6': '与股东和管理层协同推动变革',
+
+    'contact.title': '预约战略会谈',
+    'contact.subtitle': '请留下任务描述与 Telegram 联系方式，我们将返回可执行方案。',
+    'contact.name': '姓名',
+    'contact.phone': '电话',
+    'contact.telegram': 'Telegram（@username）',
+    'contact.message': '请简述你的需求',
+    'contact.consent': '我同意个人数据处理并接受法律文件条款。',
+    'contact.submit': '提交请求',
+    'contact.sending': '发送中...',
+    'contact.sent': '已发送',
+    'contact.success': '提交成功，我们将通过 Telegram 联系你。',
+    'contact.error': '发送失败，请稍后重试。',
+
+    'footer.desc': 'GudWin AI Agency - 危机管理与全流程 AI 落地。',
+    'footer.rights': '版权所有',
+    'footer.company': '个体纳税人：Малышев А. Н.（NPD）',
+    'footer.requisites': '所有收据均通过“Мой налог”应用生成',
+    'footer.address': '地址：俄罗斯联邦 圣彼得堡',
+    'footer.hours': '工作时间：周一至周五 10:00-19:00（莫斯科时间）',
+    'footer.legal': '法律文件',
+    'footer.policy': '个人数据处理政策',
+    'footer.consent': '个人数据处理同意书',
+    'footer.terms': '用户协议',
   },
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+const isLanguage = (value: string | null): value is Language => value === 'ru' || value === 'en' || value === 'zh';
+
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     const saved = localStorage.getItem('language');
-    return (saved as Language) || 'ru';
+    return isLanguage(saved) ? saved : 'ru';
   });
 
   const setLanguage = (lang: Language) => {
@@ -240,19 +275,13 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     localStorage.setItem('language', lang);
   };
 
-  const t = (key: string): string => {
-    return translations[language][key] || key;
-  };
+  const t = (key: string): string => translations[language][key] || key;
 
   useEffect(() => {
-    document.documentElement.lang = language;
+    document.documentElement.lang = language === 'zh' ? 'zh-CN' : language;
   }, [language]);
 
-  return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
-      {children}
-    </LanguageContext.Provider>
-  );
+  return <LanguageContext.Provider value={{ language, setLanguage, t }}>{children}</LanguageContext.Provider>;
 };
 
 export const useLanguage = () => {

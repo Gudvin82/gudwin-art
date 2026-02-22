@@ -1,190 +1,169 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowDown, Sparkles, Brain, Shield, BarChart3 } from 'lucide-react';
+import { ArrowRight, Sparkles, Zap } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const Hero = () => {
   const { t } = useLanguage();
-  const [displayText, setDisplayText] = useState('');
-  const fullText = t('hero.subtitle');
 
-  useEffect(() => {
-    setDisplayText('');
-    let index = 0;
-    const timer = setInterval(() => {
-      if (index < fullText.length) {
-        setDisplayText(fullText.slice(0, index + 1));
-        index++;
-      } else {
-        clearInterval(timer);
-      }
-    }, 25);
-    return () => clearInterval(timer);
-  }, [fullText]);
-
-  const scrollToContact = () => {
-    const element = document.querySelector('#contact');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const pillItems = [
-    { icon: Brain, label: 'AI' },
-    { icon: Shield, label: 'Антикризис' },
-    { icon: BarChart3, label: 'Стратегия' },
+  const metrics = [
+    { value: t('hero.metric.1.value'), label: t('hero.metric.1.label') },
+    { value: t('hero.metric.2.value'), label: t('hero.metric.2.label') },
+    { value: t('hero.metric.3.value'), label: t('hero.metric.3.label') },
   ];
 
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-muted">
-        {[...Array(15)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1.5 h-1.5 rounded-full bg-primary/20"
-            initial={{
-              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
-              y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-            }}
-            animate={{
-              x: [null, Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000)],
-              y: [null, Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800)],
-              opacity: [0.1, 0.6, 0.1],
-            }}
-            transition={{
-              duration: 12 + Math.random() * 20,
-              repeat: Infinity,
-              ease: 'linear',
-            }}
-          />
-        ))}
+  const chips = [t('hero.chip.1'), t('hero.chip.2'), t('hero.chip.3')];
 
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 8, repeat: Infinity }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 8, repeat: Infinity, delay: 2 }}
-        />
+  const scrollTo = (selector: string) => {
+    const node = document.querySelector(selector);
+    if (node) node.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <section className="relative overflow-hidden pb-20 pt-36 md:pb-28 md:pt-40">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="aurora-orb absolute -left-24 top-6 h-72 w-72 rounded-full" />
+        <div className="aurora-orb-delayed absolute right-[-80px] top-1/4 h-80 w-80 rounded-full" />
+        <div className="scan-beam absolute left-1/2 top-0 h-full w-[520px] -translate-x-1/2" />
+        <div className="tech-grid absolute inset-0 opacity-70" />
       </div>
 
-      <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8"
-          >
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">{t('hero.badge')}</span>
-          </motion.div>
-
-          {/* Main Title */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
-          >
-            <span className="bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
-              {t('hero.title')}
-            </span>
-          </motion.h1>
-
-          {/* Typewriter Subtitle */}
+      <div className="container relative z-10 mx-auto px-4 md:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          className="mb-8 text-center"
+        >
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="text-lg md:text-xl text-muted-foreground mb-8 min-h-[3em]"
+            className="hero-brand hero-brand-3d mx-auto inline-block font-display text-4xl font-semibold sm:text-6xl lg:text-7xl"
+            animate={{ scale: [1, 1.02, 1], filter: ['drop-shadow(0 0 10px rgba(255,196,64,.45))', 'drop-shadow(0 0 24px rgba(0,232,255,.55))', 'drop-shadow(0 0 10px rgba(255,196,64,.45))'] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           >
-            {displayText}
-            <motion.span
-              animate={{ opacity: [1, 0] }}
-              transition={{ duration: 0.5, repeat: Infinity }}
-              className="inline-block w-0.5 h-5 bg-primary ml-1 align-middle"
-            />
+            GudWin AI Agency
           </motion.p>
+        </motion.div>
 
-          {/* Pill icons */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="flex justify-center gap-3 mb-10"
-          >
-            {pillItems.map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <div key={i} className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted/60 border border-border/50 text-sm text-muted-foreground">
-                  <Icon className="w-4 h-4 text-primary" />
-                  {item.label}
-                </div>
-              );
-            })}
-          </motion.div>
-
-          {/* CTA Button */}
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.9 }}
-            onClick={scrollToContact}
-            className="group relative inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-full overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-primary/25"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
+        <div className="mx-auto grid max-w-6xl items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+          <div>
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-secondary"
-              animate={{ x: ['-100%', '100%'] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-              style={{ opacity: 0.3 }}
-            />
-            <span className="relative z-10">{t('hero.cta')}</span>
-            <motion.div
-              className="relative z-10"
-              animate={{ x: [0, 5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/15 px-4 py-2 text-sm shadow-[0_0_30px_hsl(var(--primary)/0.2)]"
             >
-              <ArrowDown className="w-5 h-5 rotate-[-45deg]" />
+              <Sparkles className="h-4 w-4 text-primary" />
+              <span className="text-primary">{t('hero.badge')}</span>
             </motion.div>
-          </motion.button>
 
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.1 }}
-            className="flex flex-wrap justify-center gap-8 md:gap-12 mt-16"
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.1 }}
+              className="max-w-4xl text-balance font-display text-4xl leading-tight md:text-6xl"
+            >
+              {t('hero.title')}
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.2 }}
+              className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground"
+            >
+              {t('hero.subtitle')}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.3 }}
+              className="mt-8 flex flex-wrap gap-3"
+            >
+              {chips.map((chip) => (
+                <span
+                  key={chip}
+                  className="rounded-full border border-border/80 bg-card/80 px-4 py-2 text-sm text-muted-foreground backdrop-blur"
+                >
+                  {chip}
+                </span>
+              ))}
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.4 }}
+              className="mt-10 flex flex-wrap gap-3"
+            >
+              <button
+                onClick={() => scrollTo('#contact')}
+                className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-primary to-secondary px-6 py-3 font-medium text-primary-foreground shadow-[0_0_40px_hsl(var(--primary)/0.35)]"
+                type="button"
+              >
+                {t('hero.cta.primary')}
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </button>
+              <button
+                onClick={() => scrollTo('#offer')}
+                className="rounded-xl border border-border/80 bg-card/80 px-6 py-3 font-medium text-foreground"
+                type="button"
+              >
+                {t('hero.cta.secondary')}
+              </button>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="mt-12 grid gap-4 sm:grid-cols-3"
+            >
+              {metrics.map((metric, index) => (
+                <motion.div
+                  key={metric.label}
+                  className="rounded-2xl border border-border/70 bg-card/75 p-5 backdrop-blur"
+                  animate={{ y: [0, index % 2 === 0 ? -8 : 8, 0] }}
+                  transition={{ duration: 4 + index, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <p className="font-display text-3xl text-primary">{metric.value}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{metric.label}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+
+          <motion.aside
+            initial={{ opacity: 0, x: 22 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="relative hidden overflow-hidden rounded-3xl border border-border/70 bg-card/70 p-6 backdrop-blur lg:block"
           >
-            {[
-              { value: t('hero.stat1.value'), label: t('hero.stat1.label') },
-              { value: t('hero.stat2.value'), label: t('hero.stat2.label') },
-              { value: t('hero.stat3.value'), label: t('hero.stat3.label') },
-            ].map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-primary">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,hsl(var(--primary)/0.18),transparent_45%),radial-gradient(circle_at_80%_80%,hsl(var(--secondary)/0.20),transparent_45%)]" />
+            <div className="relative space-y-5">
+              <img src="/gudwin-logo.png" alt="GudWin AI Agency logo" className="h-24 w-full rounded-2xl border border-border/70 object-cover" />
+              <div className="rounded-2xl border border-border/70 bg-background/65 p-5">
+                <p className="text-xs uppercase tracking-[0.2em] text-primary">AI Operating Layer</p>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  Единый контур: антикризисная стратегия + AI-инфраструктура + ежедневная управленческая аналитика.
+                </p>
               </div>
-            ))}
-          </motion.div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {[
+                  'Аудит и карта рисков',
+                  'AI-автоматизация под KPI',
+                  'Быстрый запуск пилота',
+                  'Масштабирование под бизнес',
+                ].map((item) => (
+                  <div key={item} className="rounded-xl border border-border/70 bg-background/70 p-3 text-xs text-muted-foreground">
+                    <Zap className="mb-2 h-4 w-4 text-primary" />
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.aside>
         </div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      >
-        <ArrowDown className="w-6 h-6 text-muted-foreground" />
-      </motion.div>
     </section>
   );
 };
