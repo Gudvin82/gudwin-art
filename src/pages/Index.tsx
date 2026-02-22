@@ -4,14 +4,10 @@ import { LanguageProvider } from '@/contexts/LanguageContext';
 import Preloader from '@/components/landing/Preloader';
 import Header from '@/components/landing/Header';
 import Hero from '@/components/landing/Hero';
-import Problems from '@/components/landing/Problems';
-import Services from '@/components/landing/Services';
 import About from '@/components/landing/About';
+import Services from '@/components/landing/Services';
+import Advantages from '@/components/landing/Advantages';
 import Cases from '@/components/landing/Cases';
-import Process from '@/components/landing/Process';
-import Pricing from '@/components/landing/Pricing';
-import Reviews from '@/components/landing/Reviews';
-import FAQ from '@/components/landing/FAQ';
 import Contact from '@/components/landing/Contact';
 import Footer from '@/components/landing/Footer';
 
@@ -31,14 +27,10 @@ const Index = () => {
           <Header />
           <main>
             <Hero />
-            <Problems />
-            <Services />
             <About />
+            <Services />
+            <Advantages />
             <Cases />
-            <Process />
-            <Pricing />
-            <Reviews />
-            <FAQ />
             <Contact />
           </main>
           <Footer />
