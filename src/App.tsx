@@ -1,27 +1,55 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { AppProvider } from '@/contexts/AppContext';
+import { SiteHeader } from '@/components/layout/SiteHeader';
+import { SiteFooter } from '@/components/layout/SiteFooter';
+import { CookieBanner } from '@/components/layout/CookieBanner';
+import HomePage from '@/pages/HomePage';
+import CreatePage from '@/pages/CreatePage';
+import PricingPage from '@/pages/PricingPage';
+import AboutPage from '@/pages/AboutPage';
+import GenerationsPage from '@/pages/account/GenerationsPage';
+import SettingsPage from '@/pages/account/SettingsPage';
+import LegalPage from '@/pages/legal/LegalPage';
+import NotFound from '@/pages/NotFound';
+import { AccountAuthGate } from '@/components/telegram/AccountAuthGate';
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+export default function App() {
+  return (
+    <AppProvider>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <div className="min-h-screen bg-background text-foreground">
+          <SiteHeader />
+          <main>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/create" element={<CreatePage />} />
+              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/legal/:slug" element={<LegalPage />} />
+              <Route
+                path="/account/generations"
+                element={
+                  <AccountAuthGate>
+                    <GenerationsPage />
+                  </AccountAuthGate>
+                }
+              />
+              <Route
+                path="/account/settings"
+                element={
+                  <AccountAuthGate>
+                    <SettingsPage />
+                  </AccountAuthGate>
+                }
+              />
+              <Route path="/account" element={<Navigate to="/account/generations" replace />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+          <SiteFooter />
+          <CookieBanner />
+        </div>
       </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
-
-export default App;
+    </AppProvider>
+  );
+}
