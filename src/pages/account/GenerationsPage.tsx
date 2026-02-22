@@ -1,4 +1,5 @@
 import { useAppContext } from '@/contexts/AppContext';
+import { sanitizeUrl } from '@/lib/security';
 
 export default function GenerationsPage() {
   const { generations, t } = useAppContext();
@@ -36,9 +37,13 @@ export default function GenerationsPage() {
                   </td>
                   <td className="px-4 py-3">{item.paid ? t('statusPaid') : t('statusUnpaid')}</td>
                   <td className="px-4 py-3">
-                    <a href={item.imageUrl} download className="text-emerald-300 hover:underline">
-                      {item.paid ? t('paidDownload') : t('payAndDownload')}
-                    </a>
+                    {item.paid && sanitizeUrl(item.imageUrl) ? (
+                      <a href={sanitizeUrl(item.imageUrl) ?? '#'} download className="text-emerald-300 hover:underline">
+                        {t('paidDownload')}
+                      </a>
+                    ) : (
+                      <span className="text-muted-foreground">{t('payAndDownload')}</span>
+                    )}
                   </td>
                 </tr>
               ))

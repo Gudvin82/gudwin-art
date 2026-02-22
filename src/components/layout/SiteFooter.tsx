@@ -33,11 +33,12 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <h4 className="mb-3 text-sm font-medium text-foreground">Contacts</h4>
+          <h4 className="mb-3 text-sm font-medium text-foreground">Контакты / Contacts</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>Telegram: @gudwinart</li>
-            <li>Email: support@gudwin.art</li>
+            <li>Telegram: @gudwinbooks_bot</li>
+            <li>Email: legal@gudwinbooks.ru</li>
             <li>Support: 10:00-19:00 (MSK)</li>
+            <li>Сайт работает на русском языке. English version available.</li>
           </ul>
         </div>
       </div>

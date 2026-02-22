@@ -10,11 +10,10 @@ interface GenerateResponse {
 }
 
 export async function generatePortraitViaApi(payload: GeneratePayload): Promise<string | null> {
-  const apiUrl = import.meta.env.VITE_AI_API_URL;
-  const apiKey = import.meta.env.VITE_AI_API_KEY;
+  const apiUrl = import.meta.env.VITE_AI_API_URL || '/api/ai/generate';
 
-  // Placeholder for your AI provider key/url. Add both env vars to activate API generation.
-  if (!apiUrl || !apiKey) {
+  // For security: API keys must stay on backend.
+  if (!apiUrl) {
     return null;
   }
 
@@ -22,7 +21,6 @@ export async function generatePortraitViaApi(payload: GeneratePayload): Promise<
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify(payload),
   });
