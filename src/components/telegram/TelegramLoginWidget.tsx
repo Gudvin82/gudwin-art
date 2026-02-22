@@ -25,7 +25,7 @@ interface Props {
 export function TelegramLoginWidget({ onAuth, size = 'large', radius = 999 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const configuredBot = import.meta.env.VITE_TELEGRAM_BOT_USERNAME;
-  const botName = useMemo(() => configuredBot ?? 'gudwinart_bot', [configuredBot]);
+  const botName = useMemo(() => configuredBot ?? 'gudwinbooks_bot', [configuredBot]);
 
   useEffect(() => {
     if (!containerRef.current || !configuredBot) {
