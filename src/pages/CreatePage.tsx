@@ -5,6 +5,7 @@ import { startTelegramStarsPayment } from '@/lib/telegram';
 import { generatePortraitViaApi } from '@/lib/ai';
 
 type Step = 'upload' | 'crop' | 'style' | 'generation' | 'result';
+type Epoch = StylePreset['epoch'];
 
 interface CropConfig {
   zoom: number;
@@ -13,6 +14,12 @@ interface CropConfig {
 }
 
 const baseCrop: CropConfig = { zoom: 1, x: 0, y: 0 };
+const epochMeta: Record<Epoch, { ru: string; en: string }> = {
+  renaissance: { ru: 'Ренессанс', en: 'Renaissance' },
+  medieval: { ru: 'Средневековье', en: 'Medieval' },
+  ancient: { ru: 'Древний мир', en: 'Ancient World' },
+  baroque: { ru: 'Барокко', en: 'Baroque' },
+};
 
 function applyCrop(imageUrl: string, crop: CropConfig): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -44,10 +51,15 @@ export default function CreatePage() {
   const { mode, lang, t, addGeneration, markPaid, selectedPack, setSelectedPack } = useAppContext();
   const modeStyles = useMemo(() => stylePresets.filter((item) => item.mode === mode), [mode]);
   const selectedPackMeta = useMemo(() => pricingPacks.find((pack) => pack.id === selectedPack) ?? pricingPacks[0], [selectedPack]);
+  const availableEpochs = useMemo(
+    () => Array.from(new Set(modeStyles.map((item) => item.epoch))),
+    [modeStyles],
+  );
 
   const [step, setStep] = useState<Step>('upload');
   const [fileUrl, setFileUrl] = useState<string>('');
   const [cropUrl, setCropUrl] = useState<string>('');
+  const [epoch, setEpoch] = useState<Epoch>(modeStyles[0]?.epoch ?? 'renaissance');
   const [style, setStyle] = useState<StylePreset | null>(modeStyles[0] ?? null);
   const [crop, setCrop] = useState<CropConfig>(baseCrop);
   const [progress, setProgress] = useState(0);
@@ -57,10 +69,28 @@ export default function CreatePage() {
   const [paid, setPaid] = useState(false);
   const [paying, setPaying] = useState(false);
   const [aiInfo, setAiInfo] = useState('');
+  const filteredStyles = useMemo(
+    () => modeStyles.filter((item) => item.epoch === epoch),
+    [modeStyles, epoch],
+  );
 
   useEffect(() => {
-    setStyle(modeStyles[0] ?? null);
-  }, [modeStyles]);
+    const fallbackEpoch = modeStyles[0]?.epoch ?? 'renaissance';
+    setEpoch(fallbackEpoch);
+    setStyle(modeStyles.find((item) => item.epoch === fallbackEpoch) ?? modeStyles[0] ?? null);
+  }, [modeStyles, mode]);
+
+  useEffect(() => {
+    if (!availableEpochs.includes(epoch)) {
+      const nextEpoch = availableEpochs[0];
+      if (nextEpoch) setEpoch(nextEpoch);
+      return;
+    }
+    const nextStyle = modeStyles.find((item) => item.epoch === epoch);
+    if (nextStyle && style?.id !== nextStyle.id) {
+      setStyle(nextStyle);
+    }
+  }, [epoch, availableEpochs, modeStyles, style?.id]);
 
   useEffect(() => {
     if (step !== 'generation') return;
@@ -224,8 +254,23 @@ export default function CreatePage() {
           )}
 
           {step === 'style' && style && (
-            <div className="grid gap-4 md:grid-cols-2">
-              {modeStyles.map((item) => (
+            <div>
+              <h2 className="text-sm uppercase tracking-wide text-muted-foreground">{t('pickEpoch')}</h2>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                {availableEpochs.map((item) => (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => setEpoch(item)}
+                    className={`rounded-lg border px-3 py-2 text-left text-sm ${epoch === item ? 'border-emerald-400 bg-emerald-400/10' : 'border-white/15 text-muted-foreground'}`}
+                  >
+                    {epochMeta[item][lang]}
+                  </button>
+                ))}
+              </div>
+              <h3 className="mt-5 text-sm uppercase tracking-wide text-muted-foreground">{t('pickStyle')}</h3>
+              <div className="mt-3 grid gap-4 md:grid-cols-2">
+                {filteredStyles.map((item) => (
                 <button key={item.id} type="button" onClick={() => setStyle(item)} className={`overflow-hidden rounded-xl border text-left ${style.id === item.id ? 'border-emerald-400' : 'border-white/10'}`}>
                   <div className="aspect-[4/5] w-full bg-black/40 p-2">
                     <img src={item.preview} alt={item.title[lang]} className="h-full w-full rounded-md object-contain object-center" />
@@ -235,7 +280,8 @@ export default function CreatePage() {
                     <p className="text-sm text-muted-foreground">{item.description[lang]}</p>
                   </div>
                 </button>
-              ))}
+                ))}
+              </div>
             </div>
           )}
 
@@ -302,9 +348,25 @@ export default function CreatePage() {
               ))}
             </div>
           </div>
-          <h2 className="text-sm uppercase tracking-wide text-muted-foreground">{t('pickStyle')}</h2>
+          <h2 className="text-sm uppercase tracking-wide text-muted-foreground">{t('pickEpoch')}</h2>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            {availableEpochs.map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => {
+                  setEpoch(item);
+                  setStep('style');
+                }}
+                className={`rounded-lg border px-3 py-2 text-left text-xs ${epoch === item ? 'border-emerald-400 bg-emerald-400/10 text-emerald-100' : 'border-white/15 text-muted-foreground'}`}
+              >
+                {epochMeta[item][lang]}
+              </button>
+            ))}
+          </div>
+          <h3 className="mt-4 text-sm uppercase tracking-wide text-muted-foreground">{t('pickStyle')}</h3>
           <div className="mt-4 space-y-3">
-            {modeStyles.map((item) => (
+            {filteredStyles.map((item) => (
               <button
                 key={item.id}
                 type="button"
