@@ -23,14 +23,14 @@ export default function HomePage() {
     },
     {
       id: 'ancient' as EpochId,
-      title: { ru: 'Древний мир', en: 'Ancient World' },
-      text: { ru: 'Античные мотивы, мрамор и тёплые тона.', en: 'Classical motifs, marble and warm tones.' },
+      title: { ru: 'Древний Рим', en: 'Ancient Rome' },
+      text: { ru: 'Римская эстетика, колонны и имперский характер.', en: 'Roman aesthetics, columns and imperial spirit.' },
       bg: 'from-yellow-900/50 to-orange-900/40',
     },
     {
       id: 'baroque' as EpochId,
-      title: { ru: 'Барокко', en: 'Baroque' },
-      text: { ru: 'Роскошные детали и драматичный контраст света.', en: 'Ornate details and dramatic lighting contrast.' },
+      title: { ru: 'Начало времён', en: 'Beginning of Time' },
+      text: { ru: 'Первобытный мир: огонь, камень и дикая природа.', en: 'Prehistoric world: fire, stone and wild nature.' },
       bg: 'from-zinc-900/80 to-amber-950/50',
     },
   ].filter((epoch) => modeStyles.some((item) => item.epoch === epoch.id));
@@ -38,27 +38,26 @@ export default function HomePage() {
   const selectedEpochLabel = epochCards.find((item) => item.id === selectedEpoch)?.title[lang] ?? '';
 
   const gallery = useMemo(() => {
-    const base = mode === 'pets' ? '/examples/pet' : '/examples/human';
     const examplesByEpoch: Record<EpochId, { src: string; alt: string }[]> = {
       renaissance: [
-        { src: `${base}-1.jpg`, alt: lang === 'ru' ? 'Пример эпохи Ренессанса' : 'Renaissance example' },
-        { src: `${base}-2.jpg`, alt: lang === 'ru' ? 'Портрет в стиле Ренессанса' : 'Renaissance portrait style' },
-        { src: `${base}-3.jpg`, alt: lang === 'ru' ? 'Классический ренессансный образ' : 'Classic renaissance look' },
+        { src: mode === 'pets' ? '/examples/pet-1.jpg' : '/examples/human-1.jpg', alt: lang === 'ru' ? 'Пример эпохи Ренессанса' : 'Renaissance example' },
+        { src: mode === 'pets' ? '/examples/pet-2.jpg' : '/examples/human-2.jpg', alt: lang === 'ru' ? 'Портрет в стиле Ренессанса' : 'Renaissance portrait style' },
+        { src: mode === 'pets' ? '/examples/pet-3.jpg' : '/examples/human-3.jpg', alt: lang === 'ru' ? 'Классический ренессансный образ' : 'Classic renaissance look' },
       ],
       medieval: [
-        { src: `${base}-2.jpg`, alt: lang === 'ru' ? 'Пример эпохи Средневековья' : 'Medieval example' },
-        { src: `${base}-3.jpg`, alt: lang === 'ru' ? 'Готический исторический портрет' : 'Gothic historical portrait' },
-        { src: `${base}-1.jpg`, alt: lang === 'ru' ? 'Средневековый антураж' : 'Medieval atmosphere' },
+        { src: '/examples/epochs/medieval-1.png', alt: lang === 'ru' ? 'Пример эпохи Средневековья' : 'Medieval example' },
+        { src: '/examples/epochs/medieval-2.png', alt: lang === 'ru' ? 'Готический исторический портрет' : 'Gothic historical portrait' },
+        { src: '/examples/epochs/medieval-3.png', alt: lang === 'ru' ? 'Средневековый антураж' : 'Medieval atmosphere' },
       ],
       ancient: [
-        { src: `${base}-3.jpg`, alt: lang === 'ru' ? 'Пример Древнего мира' : 'Ancient world example' },
-        { src: `${base}-1.jpg`, alt: lang === 'ru' ? 'Античный стиль портрета' : 'Ancient portrait style' },
-        { src: `${base}-2.jpg`, alt: lang === 'ru' ? 'Классическая античная композиция' : 'Classical ancient composition' },
+        { src: '/examples/epochs/rome-1.jpg', alt: lang === 'ru' ? 'Пример эпохи Древнего Рима' : 'Ancient Rome example' },
+        { src: '/examples/epochs/rome-2.png', alt: lang === 'ru' ? 'Римский исторический портрет' : 'Roman historical portrait' },
+        { src: '/examples/epochs/rome-3.png', alt: lang === 'ru' ? 'Имперский стиль Древнего Рима' : 'Imperial Ancient Rome style' },
       ],
       baroque: [
-        { src: `${base}-1.jpg`, alt: lang === 'ru' ? 'Пример эпохи Барокко' : 'Baroque example' },
-        { src: `${base}-3.jpg`, alt: lang === 'ru' ? 'Парадный барочный портрет' : 'Ceremonial baroque portrait' },
-        { src: `${base}-2.jpg`, alt: lang === 'ru' ? 'Барочный контраст света' : 'Baroque dramatic contrast' },
+        { src: '/examples/epochs/primordial-1.png', alt: lang === 'ru' ? 'Пример эпохи Начало времён' : 'Beginning of Time example' },
+        { src: '/examples/epochs/primordial-2.png', alt: lang === 'ru' ? 'Первобытный портретный стиль' : 'Prehistoric portrait style' },
+        { src: '/examples/epochs/primordial-3.png', alt: lang === 'ru' ? 'Начало времён: камень и огонь' : 'Beginning of Time: stone and fire' },
       ],
     };
 

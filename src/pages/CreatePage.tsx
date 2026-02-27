@@ -17,8 +17,8 @@ const baseCrop: CropConfig = { zoom: 1, x: 0, y: 0 };
 const epochMeta: Record<Epoch, { ru: string; en: string }> = {
   renaissance: { ru: 'Ренессанс', en: 'Renaissance' },
   medieval: { ru: 'Средневековье', en: 'Medieval' },
-  ancient: { ru: 'Древний мир', en: 'Ancient World' },
-  baroque: { ru: 'Барокко', en: 'Baroque' },
+  ancient: { ru: 'Древний Рим', en: 'Ancient Rome' },
+  baroque: { ru: 'Начало времён', en: 'Beginning of Time' },
 };
 
 function applyCrop(imageUrl: string, crop: CropConfig): Promise<string> {
