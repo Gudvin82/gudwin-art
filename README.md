@@ -1,83 +1,87 @@
-# GudWin Art (frontend scaffold)
+# GudWin Art
 
-Текущий статус: собран рабочий SPA-каркас продукта уровня Fable по UX-структуре с русификацией и темами.
+GudWin Art is a product showcase of an AI portrait experience: users upload a photo, choose a historical era, preview generation, and unlock HD after Telegram Stars payment.
 
-## Что реализовано
+## Product Scope
 
-- Dark-only theme (премиальная тёмная схема).
-- RU/EN переключение, RU по умолчанию.
-- Роуты:
-  - `/`
-  - `/create`
-  - `/pricing`
-  - `/about`
-  - `/legal/:slug`
-  - `/account/generations`
-  - `/account/settings`
-- Генератор flow:
-  - загрузка файла
-  - кадрирование (zoom/x/y)
-  - выбор стиля (pets/humans)
-  - экран прогресса с динамическими статусами
-  - экран результата с paywall-моделью (100 Telegram Stars -> скачивание)
-- Личный кабинет: таблица генераций и статус оплаты.
-- Авторизация: Telegram-first (UI и точки интеграции).
-- Юридические страницы РФ (шаблоны) + версия/дата вступления.
-- Cookie banner.
+- Era-based generation flow for `pets` and `humans`.
+- Supported eras in UI:
+  - `Renaissance`
+  - `Medieval`
+  - `Ancient Rome`
+  - `Beginning of Time`
+- Guided funnel:
+  - upload
+  - crop
+  - era/style selection
+  - generation progress
+  - payment gate
+  - result download
 
-## Технологии
+## Current Showcase Features
 
-- Vite + React + TypeScript + Tailwind
+- SPA built with `React + Vite + TypeScript + Tailwind`.
+- RU/EN localization.
+- Homepage with interactive era cards and era-specific examples.
+- Create page with explicit era selector and style cards.
+- Account pages for generation history and profile settings.
+- Telegram-oriented auth/payment integration points (safe frontend contract).
+- Legal pages and cookie banner for a production-like UX.
 
-## Команды
+## Public Demo Boundaries
+
+This repository is intentionally limited for public showcase:
+
+- No production secrets.
+- No private backend internals.
+- No proprietary model logic or closed business rules.
+- No customer personal data.
+
+See `SECURITY.md` and `docs/API_CONTRACT.md` for details.
+
+## Local Run
 
 ```bash
 npm install
 npm run dev
+```
+
+Build:
+
+```bash
 npm run build
 ```
 
-## Telegram интеграция
+## Environment
 
-- Создайте локальный `.env` на основе `.env.example`:
-  - `VITE_TELEGRAM_BOT_USERNAME=your_bot_username`
-  - `VITE_AI_API_URL=your_ai_endpoint`
-  - `VITE_AI_API_KEY=your_ai_key`
-- Авторизация: Telegram Login Widget подключен на главной и в `/account/settings`.
-- Stars оплата:
-  - фронт вызывает `POST /api/telegram-stars/create-invoice` с `{ recordId, amountStars: 100 }`
-  - ожидает ответ: `{ invoiceSlug?: string, invoiceLink?: string }`
-  - если endpoint не подключен, используется fallback-ссылка на бота `https://t.me/<bot>?start=buy_<recordId>`
-
-## Если занят порт 4173
+Create local `.env` from `.env.example` and set only demo-safe values:
 
 ```bash
-lsof -ti :4173 | xargs kill -9
-npm run dev -- --host 127.0.0.1 --port 4173 --strictPort
+cp .env.example .env
 ```
 
-## Примеры изображений
+Variables currently used by this frontend:
 
-- Положите референсы в `/public/examples/`:
-  - `pet-1.svg`, `pet-2.svg`, `pet-3.svg`
-  - `human-1.svg`, `human-2.svg`, `human-3.svg`
+- `VITE_SUPABASE_PROJECT_ID`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+- `VITE_SUPABASE_URL`
+- `VITE_TELEGRAM_BOT_USERNAME`
+- `VITE_AI_API_URL`
+- `VITE_AI_API_KEY`
 
-## Что нужно сделать для production (следующий этап)
+## Structure
 
-1. Перенос на Next.js App Router (если строго следовать целевому стеку).
-2. Backend и БД (Postgres + Prisma/Drizzle): users, auth_identities, styles, generations, orders, legal_documents.
-3. Реальные OAuth-провайдеры:
-   - Google OAuth
-   - Telegram Login (верификация подписи на сервере)
-4. AI adapters:
-   - server-side `generateImage/getStatus/getResult`
-   - очередь и ретраи
-5. Payment adapters:
-   - Stripe и ЮKassa/CloudPayments
-   - webhook-обработка статусов `created/pending/paid/failed/refunded`
-6. Хранилище файлов S3/R2.
-7. Rate limiting, аудит и логи.
+- `src/` - application pages, UI, state, routing.
+- `public/examples/` - sample media for gallery cards.
+- `supabase/functions/send-telegram/` - public-safe serverless integration example.
+- `docs/` - architecture and API contracts.
 
-## Важно
+## Portfolio Positioning
 
-Сейчас платежи и генерация реализованы как фронтовой прототип (mock flow) для демонстрации полного UX.
+This project is published to demonstrate product thinking, UX funnel design, and integration architecture.
+
+Core production implementation (private backend, internal orchestration, security hardening, and advanced generation logic) is intentionally kept outside this public repository.
+
+## License
+
+All rights reserved. See `LICENSE`.
