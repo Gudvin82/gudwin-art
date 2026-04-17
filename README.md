@@ -18,6 +18,14 @@ GudWin Art is a product showcase of an AI portrait experience: users upload a ph
   - payment gate
   - result download
 
+## One-Minute Demo
+
+1. Open `/create`.
+2. Upload photo and adjust crop.
+3. Select era (`Renaissance`, `Medieval`, `Ancient Rome`, `Beginning of Time`) and style.
+4. Start generation and preview result.
+5. Simulate Telegram Stars payment flow to unlock HD download.
+
 ## Current Showcase Features
 
 - SPA built with `React + Vite + TypeScript + Tailwind`.
@@ -75,6 +83,25 @@ Variables currently used by this frontend:
 - `public/examples/` - sample media for gallery cards.
 - `supabase/functions/send-telegram/` - public-safe serverless integration example.
 - `docs/` - architecture and API contracts.
+- `screenshots/` - assets for portfolio presentation.
+
+## Screenshots
+
+Homepage era gallery:
+
+![Homepage era gallery](screenshots/home-era-gallery.jpg)
+
+Create flow (upload step):
+
+![Create upload](screenshots/create-upload.jpg)
+
+Create flow (Ancient Rome example):
+
+![Create era Rome](screenshots/create-era-rome.jpg)
+
+Create flow (Medieval example):
+
+![Create era Medieval](screenshots/create-era-medieval.png)
 
 ## Portfolio Positioning
 
