@@ -27,3 +27,10 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+.vercel
+
+# Local/private env and tool configs
+.env
+.env.*
+!.env.example
+.npmrc

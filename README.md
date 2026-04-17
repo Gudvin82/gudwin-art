@@ -39,7 +39,7 @@ npm run build
 
 ## Telegram интеграция
 
-- Добавьте `.env`:
+- Создайте локальный `.env` на основе `.env.example`:
   - `VITE_TELEGRAM_BOT_USERNAME=your_bot_username`
   - `VITE_AI_API_URL=your_ai_endpoint`
   - `VITE_AI_API_KEY=your_ai_key`
